@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHU Katipunan Blood Donation System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fas fa-heartbeat"></i>
+                <h1>RHU Katipunan</h1>
+                <p>Blood Donation System<br>Zamboanga del Norte</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Login As</label>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <select id="userType" class="form-control">
+                        <option value="donor">Donor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password">
+                </div>
+            </div>
+
+            <button onclick="login()" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+
+            <div class="forgot-password">
+                <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+            </div>
+
+            <div class="signup-link">
+                <p>Don't have an account? <a href="#" onclick="showSignupForm()">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Donor Account</h3>
+                <button class="modal-close" onclick="closeSignupForm()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="signupName" class="form-control" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label>Gender *</label>
+                <select id="signupGender" class="form-control">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Username *</label>
+                <input type="text" id="signupUsername" class="form-control" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label>Contact Number *</label>
+                <input type="tel" id="signupContact" class="form-control" placeholder="09XXXXXXXXX">
+            </div>
+            <div class="form-group">
+                <label>Password *</label>
+                <input type="password" id="signupPassword" class="form-control" placeholder="Choose a password">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password *</label>
+                <input type="password" id="signupConfirmPassword" class="form-control" placeholder="Re-enter password">
+            </div>
+            <button onclick="createAccount()" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+            <div class="signup-link" style="margin-top: 15px;">
+                <p>Already have an account? <a href="#" onclick="closeSignupForm()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button class="modal-close" onclick="closeForgotPassword()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="resetUsername" class="form-control" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="resetEmail" class="form-control" placeholder="Enter your email">
+            </div>
+            <button onclick="resetPassword()" class="btn btn-primary">Reset Password</button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard container">
+        <div class="header">
+            <div class="header-left">
+                <i class="fas fa-heartbeat"></i>
+                <div class="header-title">
+                    <h1>Admin Dashboard</h1>
+                    <p>RHU Katipunan Blood Donation System</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="notification-bell" onclick="toggleMessaging()">
+                    <i class="fas fa-comments"></i>
+                    <span class="notification-badge" id="adminMessageCount" style="display:none;">0</span>
+                </div>
+                <div class="notification-bell" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="adminNotificationCount">0</span>
+                    <div id="adminNotificationDropdown" class="notification-dropdown"></div>
+                </div>
+                <div class="user-profile" onclick="toggleProfile('admin')">
+                    <div class="user-avatar">A</div>
+                    <span id="adminUsername"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div id="adminProfileDropdown" class="profile-dropdown">
+                        <div class="profile-info">
+                            <h4><i class="fas fa-user-shield"></i> Administrator</h4>
+                            <p><strong>Username:</strong> <span id="adminProfileUsername"></span></p>
+                            <p><strong>Email:</strong> <span id="adminProfileEmail"></span></p>
+                            <p><strong>Role:</strong> System Administrator</p>
+                        </div>
+                        <button onclick="logout()" class="btn-logout-profile">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('schedules')">
+                <i class="fas fa-calendar-alt"></i> Manage Schedules
+            </button>
+            <button class="tab-btn" onclick="switchTab('appointments')">
+                <i class="fas fa-clipboard-list"></i> Appointments
+            </button>
+            <button class="tab-btn" onclick="switchTab('donors')">
+                <i class="fas fa-users"></i> Donors
+            </button>
+            <button class="tab-btn" onclick="switchTab('trash')">
+                <i class="fas fa-trash"></i> Trash Bin
+            </button>
+        </div>
+
+        <!-- Schedules Tab -->
+        <div id="schedulesTab" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-plus-circle"></i> Create New Schedule</h2>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="scheduleDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" id="scheduleStartTime" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" id="scheduleEndTime" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Assigned Staff</label>
+                        <input type="text" id="scheduleStaff" class="form-control" placeholder="Staff name">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Slots</label>
+                        <input type="number" id="scheduleSlots" class="form-control" min="1" value="10">
+                    </div>
+                </div>
+                <button onclick="createSchedule()" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Create Schedule
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-list"></i> Existing Schedules</h2>
+                </div>
+                <div id="schedulesList"></div>
+            </div>
+        </div>
+
+        <!-- Appointments Tab -->
+        <div id="appointmentsTab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-clipboard-check"></i> Pending Appointments</h2>
+                </div>
+                <div id="pendingAppointmentsList" class="schedule-grid"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-history"></i> All Appointments</h2>
+                </div>
+                <div id="allAppointmentsList" class="schedule-grid"></div>
+            </div>
+        </div>
+
+        <!-- Donors Tab -->
+        <div id="donorsTab" class="tab-content">
+            <div class="donor-stats-grid">
+                <div class="donor-stat-card">
+                    <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                    <div class="stat-info">
+                        <h3 id="registeredDonorsCount">0</h3>
+                        <p>Registered Donors</p>
+                    </div>
+                </div>
+                <div class="donor-stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%);"><i class="fas fa-user-plus"></i></div>
+                    <div class="stat-info">
+                        <h3 id="completedDonorsCount">0</h3>
+                        <p>Active Donors</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users"></i> All Registered Donors</h2>
+                </div>
+                <div id="donorsList"></div>
+            </div>
+        </div>
+
+        <!-- Trash Bin Tab -->
+        <div id="trashTab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-trash-restore"></i> Deleted Schedules</h2>
+                </div>
+                <div id="deletedSchedulesList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-trash-restore"></i> Deleted Appointments</h2>
+                </div>
+                <div id="deletedAppointmentsList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-user-times"></i> Deleted Donor Accounts</h2>
+                </div>
+                <div id="deletedDonorsList"></div>
+            </div>
+        </div>
+
+        <!-- Admin Footer -->
+        <footer class="system-footer">
+            <p><i class="fas fa-code"></i> Programmed by <strong>Printf</strong> | RHU Katipunan Blood Donation System © 2025</p>
+        </footer>
+    </div>
+
+    <!-- Donor Dashboard -->
+    <div id="donorDashboard" class="dashboard container">
+        <div class="header">
+            <div class="header-left">
+                <i class="fas fa-heartbeat"></i>
+                <div class="header-title">
+                    <h1>Donor Portal</h1>
+                    <p>RHU Katipunan Blood Donation System</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="notification-bell" onclick="toggleMessaging()">
+                    <i class="fas fa-comments"></i>
+                    <span class="notification-badge" id="donorMessageCount" style="display:none;">0</span>
+                </div>
+                <div class="notification-bell" onclick="toggleDonorNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="donorNotificationCount">0</span>
+                    <div id="donorNotificationDropdown" class="notification-dropdown"></div>
+                </div>
+                <div class="user-profile" onclick="toggleProfile('donor')">
+                    <div class="user-avatar">D</div>
+                    <span id="donorUsername"></span>
+                    <i class="fas fa-chevron-down"></i>
+                    <div id="donorProfileDropdown" class="profile-dropdown">
+                        <div class="profile-info">
+                            <h4><i class="fas fa-user"></i> <span id="donorProfileName"></span></h4>
+                            <p><strong>Username:</strong> <span id="donorProfileUsername"></span></p>
+                            <p><strong>Email:</strong> <span id="donorProfileEmail"></span></p>
+                            <p><strong>Contact:</strong> <span id="donorProfileContact"></span></p>
+                            <p><strong>Total Donations:</strong> <span id="donorProfileDonations">0</span></p>
+                        </div>
+                        <button onclick="logout()" class="btn-logout-profile">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchDonorTab('about')">
+                <i class="fas fa-info-circle"></i> About
+            </button>
+            <button class="tab-btn" onclick="switchDonorTab('book')">
+                <i class="fas fa-calendar-plus"></i> Book Appointment
+            </button>
+            <button class="tab-btn" onclick="switchDonorTab('myAppointments')">
+                <i class="fas fa-calendar-check"></i> My Appointments
+            </button>
+        </div>
+
+        <!-- About Tab -->
+        <div id="aboutTab" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-heart"></i> Welcome to Blood Donation</h2>
+                </div>
+                <div class="about-content">
+                    <div class="about-hero">
+                        <div class="hero-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <h3>Be a Hero, Save Lives Today!</h3>
+                        <p class="hero-subtitle">Every donation can save up to 3 lives</p>
+                    </div>
+
+                    <div class="about-section">
+                        <div class="section-icon"><i class="fas fa-question-circle"></i></div>
+                        <h4>Why Donate Blood?</h4>
+                        <p>Blood donation is one of the most selfless acts you can perform. Your donation directly saves lives in emergency situations, surgeries, cancer treatments, and for patients with chronic illnesses. Every 2 seconds, someone in our community needs blood.</p>
+                    </div>
+
+                    <div class="about-section">
+                        <div class="section-icon"><i class="fas fa-users-medical"></i></div>
+                        <h4>Who Needs Your Blood?</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <i class="fas fa-ambulance"></i>
+                                <p>Accident & Emergency Victims</p>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-user-injured"></i>
+                                <p>Surgery Patients</p>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-baby"></i>
+                                <p>Mothers & Newborns</p>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-ribbon"></i>
+                                <p>Cancer Patients</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-section">
+                        <div class="section-icon"><i class="fas fa-gift"></i></div>
+                        <h4>Benefits of Donating Blood</h4>
+                        <div class="benefits-list">
+                            <div class="benefit-item">
+                                <i class="fas fa-heart-pulse"></i>
+                                <div>
+                                    <strong>Free Health Screening</strong>
+                                    <p>Get your blood pressure, hemoglobin, and blood type checked for free</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-dna"></i>
+                                <div>
+                                    <strong>Health Benefits</strong>
+                                    <p>Regular donation helps reduce iron overload and improves cardiovascular health</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-smile-beam"></i>
+                                <div>
+                                    <strong>Emotional Satisfaction</strong>
+                                    <p>Experience the joy of knowing you've saved lives</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-certificate"></i>
+                                <div>
+                                    <strong>Donor Certificate</strong>
+                                    <p>Receive a certificate of appreciation for your heroic act</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cta-section">
+                        <i class="fas fa-calendar-plus"></i>
+                        <h4>Ready to Make a Difference?</h4>
+                        <p>Book your appointment today and join our community of lifesavers!</p>
+                        <button onclick="switchDonorTab('book')" class="btn btn-primary">
+                            <i class="fas fa-calendar-alt"></i> Book Appointment Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Appointment Tab -->
+        <div id="bookTab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-alt"></i> Available Schedules</h2>
+                </div>
+                <div class="schedule-grid" id="donorSchedulesList"></div>
+            </div>
+        </div>
+
+        <!-- My Appointments Tab -->
+        <div id="myAppointmentsTab" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-history"></i> My Appointments</h2>
+                </div>
+                <div id="donorAppointmentsList"></div>
+            </div>
+        </div>
+
+        <!-- Donor Footer -->
+        <footer class="system-footer">
+            <p><i class="fas fa-code"></i> Programmed by <strong>Printf</strong> | RHU Katipunan Blood Donation System © 2025</p>
+            <div class="share-btn" onclick="shareApp()"><i class="fas fa-share-alt"></i> Share</div>
+        </footer>
+    </div>
+
+    <!-- Eligibility Check Modal -->
+    <div id="eligibilityModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-clipboard-check"></i> Eligibility Check</h3>
+                <button class="modal-close" onclick="closeEligibilityModal()">&times;</button>
+            </div>
+            <p style="margin-bottom: 20px; color: #2c3e50; font-weight: 600;">Before booking an appointment, please confirm you meet all eligibility requirements:</p>
+            
+            <div class="eligibility-checker">
+                <div class="eligibility-category">
+                    <h4><i class="fas fa-user"></i> Basic Requirements</h4>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="age18">
+                            <span>I am between 18-65 years old</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="weight50">
+                            <span>I weigh at least 50 kg (110 lbs)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="eligibility-category">
+                    <h4><i class="fas fa-heart-pulse"></i> Health Status</h4>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="healthyCheck">
+                            <span>I am in good health today (no fever, cold, or flu)</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noInfection">
+                            <span>I am free from infections (HIV, Hepatitis B/C, Malaria, Syphilis, etc.)</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noChronicIllness">
+                            <span>I do not have chronic illnesses (heart disease, diabetes requiring insulin, cancer)</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="normalBP">
+                            <span>I have normal blood pressure (not too high or too low)</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noAnemia">
+                            <span>I am not anemic (no history of low hemoglobin)</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noSeizures">
+                            <span>I do not have epilepsy or seizure disorders</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="eligibility-category">
+                    <h4><i class="fas fa-calendar-days"></i> Recent History</h4>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noRecentTattoo">
+                            <span>I have not gotten a tattoo, piercing, or acupuncture in the last 6 months</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noRecentSurgery">
+                            <span>I have not had surgery or dental procedures in the last 6 months</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noRecentVaccine">
+                            <span>I have not received vaccines in the last 4 weeks (or as advised)</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noRecentTravel">
+                            <span>I have not traveled to malaria-endemic areas in the last 3 months</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="eligibility-category">
+                    <h4><i class="fas fa-pills"></i> Medications & Lifestyle</h4>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noAntibiotics">
+                            <span>I am not currently taking antibiotics or other medications that prevent donation</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noAlcohol">
+                            <span>I have not consumed alcohol in the last 24 hours</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="hadMeal">
+                            <span>I have eaten a proper meal within the last 4 hours</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noSmoking">
+                            <span>I have not smoked in the last 2 hours</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noDrugs">
+                            <span>I do not use illegal drugs or substances</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="eligibility-category" id="femaleOnlySection" style="display:none;">
+                    <h4><i class="fas fa-venus"></i> For Female Donors Only</h4>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="notPregnant">
+                            <span>I am not pregnant or breastfeeding</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="notMenstruating">
+                            <span>I am not currently menstruating (or feeling comfortable to donate)</span>
+                        </label>
+                    </div>
+                    <div class="eligibility-question">
+                        <label>
+                            <input type="checkbox" id="noRecentPregnancy">
+                            <span>It has been at least 6 months since childbirth or miscarriage</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="eligibilityResult"></div>
+
+            <button onclick="checkEligibility()" class="btn btn-primary" style="margin-top: 20px;">
+                <i class="fas fa-check"></i> Check My Eligibility
+            </button>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Book Appointment</h3>
+                <button class="modal-close" onclick="closeBookingModal()">&times;</button>
+            </div>
+            <div id="bookingForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="donorName" class="form-control" placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label>Age *</label>
+                    <input type="number" id="donorAge" class="form-control" min="18" max="65" placeholder="Enter age">
+                </div>
+                <div class="form-group">
+                    <label>Gender *</label>
+                    <select id="donorGender" class="form-control">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Civil Status *</label>
+                    <select id="donorStatus" class="form-control">
+                        <option value="">Select Status</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Widowed">Widowed</option>
+                        <option value="Separated">Separated</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Current Address *</label>
+                    <textarea id="donorAddress" class="form-control" rows="2" placeholder="Complete address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Contact Number *</label>
+                    <input type="tel" id="donorContact" class="form-control" placeholder="09XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="donorEmail" class="form-control" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Medical History / Conditions</label>
+                    <textarea id="medicalHistory" class="form-control" rows="3" placeholder="Any medical conditions, medications, or allergies..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Have you donated blood before? *</label>
+                    <select id="hasDonatedBefore" class="form-control" onchange="toggleDonationFields()">
+                        <option value="">Select Option</option>
+                        <option value="no">No, first time donor</option>
+                        <option value="yes">Yes, I have donated before</option>
+                    </select>
+                </div>
+                <div id="previousDonationFields" style="display:none;">
+                    <div class="form-group">
+                        <label>Number of previous donations *</label>
+                        <input type="number" id="previousDonations" class="form-control" min="1" placeholder="Enter number of times">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Donation Date *</label>
+                        <input type="date" id="lastDonationDate" class="form-control" onchange="checkLastDonationDate()">
+                        <small id="donationWarning" style="display: none; margin-top: 8px; padding: 8px; border-radius: 6px;"></small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Blood Type *</label>
+                    <select id="donorBloodType" class="form-control">
+                        <option value="">Select Blood Type</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="N/A">N/A (Unknown)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Number of Bags to Donate *</label>
+                    <select id="numBags" class="form-control">
+                        <option value="1">1 Bag (450ml)</option>
+                        <option value="2">2 Bags (900ml)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Emergency Contact Name *</label>
+                    <input type="text" id="emergencyName" class="form-control" placeholder="Emergency contact name">
+                </div>
+                <div class="form-group">
+                    <label>Emergency Contact Number *</label>
+                    <input type="tel" id="emergencyContact" class="form-control" placeholder="Emergency contact number">
+                </div>
+                <button onclick="submitBooking()" class="btn btn-primary" id="submitBookingBtn">
+                    <i class="fas fa-check"></i> Submit Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Schedule Modal -->
+    <div id="editScheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Schedule</h3>
+                <button class="modal-close" onclick="closeEditScheduleModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="editScheduleDate" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Start Time</label>
+                <input type="time" id="editScheduleStartTime" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>End Time</label>
+                <input type="time" id="editScheduleEndTime" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Assigned Staff</label>
+                <input type="text" id="editScheduleStaff" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Number of Slots</label>
+                <input type="number" id="editScheduleSlots" class="form-control" min="1">
+            </div>
+            <button onclick="updateSchedule()" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update Schedule
+            </button>
+        </div>
+    </div>
+
+    <!-- View Schedule Appointments Modal -->
+    <div id="viewScheduleModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="viewScheduleTitle"><i class="fas fa-list"></i> Appointments</h3>
+                <button class="modal-close" onclick="closeViewScheduleModal()">&times;</button>
+            </div>
+            <div id="viewScheduleContent"></div>
+        </div>
+    </div>
+
+    <!-- Messaging Modal -->
+    <div id="messagingModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-comments"></i> Messages</h3>
+                <button class="modal-close" onclick="closeMessaging()">&times;</button>
+            </div>
+            <div id="messagesList"></div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="chatHeader"><i class="fas fa-user-circle"></i> Chat</h3>
+                <button class="modal-close" onclick="closeChat()">&times;</button>
+            </div>
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="messageInput" class="form-control" placeholder="Type your message..." style="margin-bottom: 0;">
+                    <button onclick="sendMessage()" class="btn btn-primary" style="margin-left: 10px; width: auto; padding: 12px 20px;">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-alt"></i> Reschedule Appointment</h3>
+                <button class="modal-close" onclick="closeRescheduleModal()">&times;</button>
+            </div>
+            <div class="schedule-grid" id="rescheduleSchedulesList"></div>
+        </div>
+    </div>
+
+    <!-- View Donor Credentials Modal -->
+    <div id="viewCredentialsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-lock"></i> Donor Credentials</h3>
+                <button class="modal-close" onclick="closeCredentialsModal()">&times;</button>
+            </div>
+            <div id="credentialsContent"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
